@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1"
+    buildToolsVersion "21.1.0"
 
     defaultConfig {
         applicationId "ca.rmen.android.frenchcalendar"
@@ -28,7 +28,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
     }
@@ -43,6 +43,8 @@ android.applicationVariants.all { variant ->
 
 dependencies {
     compile 'ca.rmen:lib-french-revolutionary-calendar:1.0.5'
+    compile 'com.google.android.gms:play-services:6.1.71'
+    compile project(':common')
 }
 
 task deploy(dependsOn: assembleRelease) << {

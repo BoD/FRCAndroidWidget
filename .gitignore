@@ -4,4 +4,3 @@ build.properties
 build
 etc/apk
 local.properties
-handheld/build

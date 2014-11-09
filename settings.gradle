@@ -1,1 +1,1 @@
-include ':handheld'
+include ':handheld', ':common', ':wearable'
