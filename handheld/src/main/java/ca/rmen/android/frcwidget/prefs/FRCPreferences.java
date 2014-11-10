@@ -23,11 +23,12 @@ import java.util.Locale;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
 import ca.rmen.lfrc.FrenchRevolutionaryCalendar.CalculationMethod;
 
 /**
  * Preference names and values used by this app.
- * 
+ *
  * @author calvarez
  */
 public class FRCPreferences {
@@ -35,6 +36,7 @@ public class FRCPreferences {
     static final String PREF_METHOD = "setting_method";
     static final String PREF_DETAILED_VIEW = "setting_detailed_view";
     static final String PREF_LANGUAGE = "setting_language";
+    static final String PREF_ANDROID_WEAR = "setting_android_wear";
     private static final int FREQUENCY_MINUTES = 86400;
     public static final int FREQUENCY_DAYS = 86400000;
 
@@ -44,7 +46,9 @@ public class FRCPreferences {
 
     public static enum DetailedView {
         NONE, TIME, DAY_OF_YEAR
-    };
+    }
+
+    ;
 
     public synchronized static FRCPreferences getInstance(Context context) {
         if (me == null) me = new FRCPreferences(context);
@@ -61,7 +65,7 @@ public class FRCPreferences {
     }
 
     public CalculationMethod getCalculationMethod() {
-        String methodPrefStr = sharedPrefs.getString(FRCPreferences.PREF_METHOD, "0");
+        String methodPrefStr = sharedPrefs.getString(PREF_METHOD, "0");
         int calculationMethodInt = Integer.parseInt(methodPrefStr);
         CalculationMethod calculationMethod = CalculationMethod.values()[calculationMethodInt];
         return calculationMethod;
@@ -70,14 +74,17 @@ public class FRCPreferences {
     public int getUpdateFrequency() {
         DetailedView detailedView = getDetailedView();
         final int frequency;
-        if (detailedView == DetailedView.TIME) frequency = FRCPreferences.FREQUENCY_MINUTES;
-        else
-            frequency = FRCPreferences.FREQUENCY_DAYS;
+        if (detailedView == DetailedView.TIME) frequency = FREQUENCY_MINUTES;
+        else frequency = FREQUENCY_DAYS;
         return frequency;
     }
 
     public DetailedView getDetailedView() {
-        String detailedViewValue = sharedPrefs.getString(FRCPreferences.PREF_DETAILED_VIEW, DetailedView.DAY_OF_YEAR.name().toLowerCase(Locale.US));
+        String detailedViewValue = sharedPrefs.getString(PREF_DETAILED_VIEW, DetailedView.DAY_OF_YEAR.name().toLowerCase(Locale.US));
         return DetailedView.valueOf(detailedViewValue.toUpperCase(Locale.US));
+    }
+
+    public boolean getAndroidWearEnabled() {
+        return sharedPrefs.getBoolean(PREF_ANDROID_WEAR, false);
     }
 }

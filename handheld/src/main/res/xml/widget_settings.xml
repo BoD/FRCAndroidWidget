@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   French Revolutionary Calendar Android Widget
   Copyright (C) 2011 - 2014 Carmen Alvarez
   
@@ -19,7 +18,7 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="widget_settings"
-    android:title="@string/widget_settings" >
+    android:title="@string/widget_settings">
 
     <ListPreference
         android:defaultValue="0"
@@ -45,7 +44,13 @@
         android:key="setting_language"
         android:title="@string/setting_language" />
 
-    <Preference android:title="@string/about" >
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="setting_android_wear"
+        android:title="@string/setting_android_wear"
+        android:summary="@string/setting_android_wear_summary" />
+
+    <Preference android:title="@string/about">
         <intent android:action="ca.rmen.android.frcwidget.FRCAboutActivity" />
     </Preference>
 

@@ -22,6 +22,7 @@ package ca.rmen.android.frenchcalendar.wearable.app.notif;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -44,9 +45,25 @@ public class NotificationService extends WearableListenerService {
     private static final String TAG = NotificationService.class.getSimpleName();
 
     private static final int NOTIFICATION_ID = 0;
+    private static final int[] MONTH_COLORS = {
+            R.color.month_0,
+            R.color.month_1,
+            R.color.month_2,
+            R.color.month_3,
+            R.color.month_4,
+            R.color.month_5,
+            R.color.month_6,
+            R.color.month_7,
+            R.color.month_8,
+            R.color.month_9,
+            R.color.month_10,
+            R.color.month_11,
+            R.color.month_12,
+    };
 
     private String mDate;
     private String mDayOfYear;
+    private int mMonth;
 
     public NotificationService() {}
 
@@ -64,6 +81,8 @@ public class NotificationService extends WearableListenerService {
         Log.d(TAG, "count=" + dataEvents.getCount());
 
         for (DataEvent dataEvent : dataEvents) {
+            if (dataEvent.getType() != DataEvent.TYPE_CHANGED) continue;
+
             DataItem dataItem = dataEvent.getDataItem();
             Uri uri = dataItem.getUri();
             Log.d(TAG, "uri=" + uri);
@@ -73,6 +92,7 @@ public class NotificationService extends WearableListenerService {
             DataMap dataMap = dataMapItem.getDataMap();
             mDate = dataMap.getString(WearCommConstants.EXTRA_DATE);
             mDayOfYear = dataMap.getString(WearCommConstants.EXTRA_DAY_OF_YEAR);
+            mMonth = dataMap.getInt(WearCommConstants.EXTRA_MONTH);
             showNotification();
         }
     }
@@ -110,11 +130,19 @@ public class NotificationService extends WearableListenerService {
         // Wear specifics
         Notification.WearableExtender wearableExtender = new Notification.WearableExtender();
         wearableExtender.setHintHideIcon(true);
-        // TODO Color depending on month
-//        wearableExtender.setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notif_logo));
+        // Set the background color depending on month
+        wearableExtender.setBackground(createBitmapForMonth());
 
         Notification.Builder wearableNotifBuilder = wearableExtender.extend(mainNotifBuilder);
         Notification res = wearableNotifBuilder.build();
         return res;
+    }
+
+    public Bitmap createBitmapForMonth() {
+        int colorId = MONTH_COLORS[mMonth - 1];
+        int color = getResources().getColor(colorId);
+        int[] colors = {color};
+        Bitmap bitmap = Bitmap.createBitmap(colors, 1, 1, Bitmap.Config.ARGB_8888);
+        return bitmap;
     }
 }

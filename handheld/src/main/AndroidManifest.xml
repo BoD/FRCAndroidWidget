@@ -23,16 +23,24 @@
     android:installLocation="internalOnly"
     tools:ignore="MissingVersion,UnusedAttribute">
 
+    <uses-sdk tools:overrideLibrary="com.google.android.gms, android.support.v4" />
+
     <supports-screens
         android:anyDensity="false"
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity android:name="ca.rmen.android.frcwidget.prefs.FRCPreferenceActivity">
             <intent-filter>
@@ -103,6 +111,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_minimalist" />
         </receiver>
+
+        <receiver android:name="ca.rmen.android.frcwidget.FRCBootCompletedBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="ca.rmen.android.frcwidget.wear.AndroidWearService" />
+
     </application>
 
 </manifest>

@@ -91,13 +91,14 @@ public class WearCommHelper {
     /**
      * This must not be called from the UI thread.
      */
-    public void updateToday(String date, String dayOfYear) {
+    public void updateToday(String date, String dayOfYear, int month) {
         Log.d(TAG, "updateToday date=" + date + " dayOfYear=" + dayOfYear);
         PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(WearCommConstants.PATH_TODAY);
 
         DataMap dataMap = putDataMapRequest.getDataMap();
         dataMap.putString(WearCommConstants.EXTRA_DATE, date);
         dataMap.putString(WearCommConstants.EXTRA_DAY_OF_YEAR, dayOfYear);
+        dataMap.putInt(WearCommConstants.EXTRA_MONTH, month);
 
         PutDataRequest request = putDataMapRequest.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, request).await();

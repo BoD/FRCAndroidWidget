@@ -38,6 +38,8 @@
     <string name="setting_detailed_view_summary">%s</string>
     <string name="setting_language">Language</string>
     <string name="setting_language_summary">%s</string>
+    <string name="setting_android_wear">Android Wear</string>
+    <string name="setting_android_wear_summary">Show a notification once a day on connected Android Wear devices</string>
     <string name="share_chooser_title">Choose an app</string>
     <string name="popup_action_share">Share</string>
     <string name="popup_action_settings">Settings</string>

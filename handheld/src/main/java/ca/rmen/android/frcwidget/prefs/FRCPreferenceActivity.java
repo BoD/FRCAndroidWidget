@@ -22,17 +22,21 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import ca.rmen.android.frcwidget.FRCScheduler;
+import ca.rmen.android.frcwidget.wear.AndroidWearService;
+import ca.rmen.android.frcwidget.wear.ScheduleUtil;
 import ca.rmen.android.frenchcalendar.R;
 
 /**
  * Configuration screen. The settings in this screen will apply to all widgets: both narrow and wide.
- * 
+ *
  * @author calvarez
  */
 public class FRCPreferenceActivity extends PreferenceActivity { // NO_UCD (use default)
@@ -62,11 +66,15 @@ public class FRCPreferenceActivity extends PreferenceActivity { // NO_UCD (use d
         Intent resultValue = new Intent();
         if (appWidgetId > -1) resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_OK, resultValue);
+
+        // Don't show Android Wear stuff for old devices that don't support it
+        if (Integer.valueOf(Build.VERSION.SDK) < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            getPreferenceScreen().removePreference(findPreference(FRCPreferences.PREF_ANDROID_WEAR));
+        }
     }
 
     private void updatePreferenceSummary(String key, int summaryResId) {
-        @SuppressWarnings("deprecation")
-        ListPreference pref = (ListPreference) getPreferenceManager().findPreference(key);
+        @SuppressWarnings("deprecation") ListPreference pref = (ListPreference) getPreferenceManager().findPreference(key);
         String summary = getString(summaryResId, pref.getEntry());
         pref.setSummary(summary);
     }
@@ -100,8 +108,22 @@ public class FRCPreferenceActivity extends PreferenceActivity { // NO_UCD (use d
                 updatePreferenceSummary(key, R.string.setting_detailed_view_summary);
             } else if (FRCPreferences.PREF_LANGUAGE.equals(key)) {
                 updatePreferenceSummary(key, R.string.setting_language_summary);
+            } else if (FRCPreferences.PREF_ANDROID_WEAR.equals(key)) {
+                boolean enabled = sharedPreferences.getBoolean(FRCPreferences.PREF_ANDROID_WEAR, false);
+                if (enabled) {
+                    // Schedule an alarm
+                    ScheduleUtil.scheduleRepeatingAlarm(FRCPreferenceActivity.this);
+
+                    // Also send the value now
+                    AndroidWearService.backgroundRemoveAndUpdateDays(FRCPreferenceActivity.this);
+
+                    // Also send the value in a minute (this allows the Wearable app to finish installing)
+                    ScheduleUtil.scheduleOnceAlarm(FRCPreferenceActivity.this);
+                } else {
+                    // Unschedule the alarm
+                    ScheduleUtil.unscheduleRepeatingAlarm(FRCPreferenceActivity.this);
+                }
             }
         }
     };
-
 }
