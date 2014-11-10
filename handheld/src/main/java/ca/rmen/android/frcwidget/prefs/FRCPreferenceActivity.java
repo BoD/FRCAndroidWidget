@@ -104,13 +104,17 @@ public class FRCPreferenceActivity extends PreferenceActivity { // NO_UCD (use d
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (FRCPreferences.PREF_METHOD.equals(key)) {
                 updatePreferenceSummary(key, R.string.setting_method_summary);
+                // Update the Android Wear notification (if enabled)
+                updateWearNotificationIfEnabled(sharedPreferences);
             } else if (FRCPreferences.PREF_DETAILED_VIEW.equals(key)) {
                 updatePreferenceSummary(key, R.string.setting_detailed_view_summary);
             } else if (FRCPreferences.PREF_LANGUAGE.equals(key)) {
                 updatePreferenceSummary(key, R.string.setting_language_summary);
+                // Update the Android Wear notification (if enabled)
+                updateWearNotificationIfEnabled(sharedPreferences);
             } else if (FRCPreferences.PREF_ANDROID_WEAR.equals(key)) {
-                boolean enabled = sharedPreferences.getBoolean(FRCPreferences.PREF_ANDROID_WEAR, false);
-                if (enabled) {
+                boolean androidWearEnabled = sharedPreferences.getBoolean(FRCPreferences.PREF_ANDROID_WEAR, false);
+                if (androidWearEnabled) {
                     // Schedule an alarm
                     ScheduleUtil.scheduleRepeatingAlarm(FRCPreferenceActivity.this);
 
@@ -126,4 +130,12 @@ public class FRCPreferenceActivity extends PreferenceActivity { // NO_UCD (use d
             }
         }
     };
+
+    private void updateWearNotificationIfEnabled(SharedPreferences sharedPreferences) {
+        boolean androidWearEnabled = sharedPreferences.getBoolean(FRCPreferences.PREF_ANDROID_WEAR, false);
+        if (androidWearEnabled) {
+            // Update the value now
+            AndroidWearService.backgroundRemoveAndUpdateDays(this);
+        }
+    }
 }
